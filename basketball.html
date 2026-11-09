@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basketball Scoreboard</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #11151c;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 25px;
+    letter-spacing: 3px;
+}
+
+.scoreboard {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    max-width: 850px;
+    margin: auto;
+}
+
+.team {
+    flex: 1;
+    padding: 25px 15px;
+    border-radius: 15px;
+    background: #222a36;
+    border-top: 8px solid var(--team-color);
+}
+
+.team input[type="text"] {
+    width: 100%;
+    max-width: 250px;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 15px;
+}
+
+.score {
+    font-size: clamp(65px, 12vw, 110px);
+    font-weight: bold;
+    margin: 10px 0 20px;
+    color: var(--team-color);
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 17px;
+    margin: 4px;
+    font-size: 17px;
+    font-weight: bold;
+    background: var(--team-color);
+    color: white;
+}
+
+button:hover {
+    filter: brightness(1.2);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+.color-picker {
+    margin: 15px;
+}
+
+.color-picker input {
+    width: 45px;
+    height: 35px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+}
+
+.period {
+    margin: 25px auto;
+    background: #222a36;
+    padding: 20px;
+    max-width: 350px;
+    border-radius: 12px;
+}
+
+.period button {
+    background: #39485c;
+}
+
+#period {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 12px;
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+.controls button {
+    background: #39485c;
+}
+
+.reset {
+    background: #c0392b !important;
+}
+
+@media(max-width: 500px) {
+    .scoreboard {
+        gap: 8px;
+    }
+
+    .team {
+        padding: 15px 7px;
+    }
+
+    button {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>🏀 BASKETBALL SCOREBOARD</h1>
+
+<div class="scoreboard">
+
+    <!-- HOME TEAM -->
+    <div class="team" id="homeTeam"
+         style="--team-color: #e63946;">
+
+        <input type="text" id="homeName"
+               value="HOME TEAM">
+
+        <div class="score" id="homeScore">0</div>
+
+        <button onclick="addScore('home', 1)">+1</button>
+        <button onclick="addScore('home', 2)">+2</button>
+        <button onclick="addScore('home', 3)">+3</button>
+
+        <div class="color-picker">
+            Team Color:
+            <input type="color" value="#e63946"
+                   onchange="changeColor('home', this.value)">
+        </div>
+    </div>
+
+    <!-- AWAY TEAM -->
+    <div class="team" id="awayTeam"
+         style="--team-color: #2878e0;">
+
+        <input type="text" id="awayName"
+               value="AWAY TEAM">
+
+        <div class="score" id="awayScore">0</div>
+
+        <button onclick="addScore('away', 1)">+1</button>
+        <button onclick="addScore('away', 2)">+2</button>
+        <button onclick="addScore('away', 3)">+3</button>
+
+        <div class="color-picker">
+            Team Color:
+            <input type="color" value="#2878e0"
+                   onchange="changeColor('away', this.value)">
+        </div>
+    </div>
+
+</div>
+
+<!-- PERIOD -->
+<div class="period">
+    <h2>PERIOD</h2>
+
+    <div id="period">1</div>
+
+    <button onclick="changePeriod(-1)">−</button>
+    <button onclick="changePeriod(1)">+</button>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+    <button onclick="undo()">↩ UNDO</button>
+    <button class="reset" onclick="resetGame()">
+        RESET GAME
+    </button>
+</div>
+
+<script>
+let homeScore = 0;
+let awayScore = 0;
+let period = 1;
+
+let history = [];
+
+function updateDisplay() {
+    document.getElementById("homeScore").textContent = homeScore;
+    document.getElementById("awayScore").textContent = awayScore;
+    document.getElementById("period").textContent = period;
+}
+
+function saveHistory() {
+    history.push({
+        home: homeScore,
+        away: awayScore,
+        period: period
+    });
+}
+
+function addScore(team, points) {
+    saveHistory();
+
+    if (team === "home") {
+        homeScore += points;
+    } else {
+        awayScore += points;
+    }
+
+    updateDisplay();
+}
+
+function changePeriod(amount) {
+    saveHistory();
+
+    period = Math.max(1, Math.min(10, period + amount));
+
+    updateDisplay();
+}
+
+function changeColor(team, color) {
+    document.getElementById(team + "Team")
+        .style.setProperty("--team-color", color);
+}
+
+function undo() {
+    if (history.length === 0) return;
+
+    let previous = history.pop();
+
+    homeScore = previous.home;
+    awayScore = previous.away;
+    period = previous.period;
+
+    updateDisplay();
+}
+
+function resetGame() {
+    if (!confirm("Reset the entire scoreboard?")) return;
+
+    homeScore = 0;
+    awayScore = 0;
+    period = 1;
+
+    history = [];
+
+    updateDisplay();
+}
+</script>
+
+</body>
+</html>
