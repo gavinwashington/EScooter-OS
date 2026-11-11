@@ -1,0 +1,918 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-SCOOTER OS</title>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #080a0b;
+  color: white;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:root {
+  --green: #39ee55;
+  --blue: #28baff;
+  --panel: #15191c;
+  --muted: #747d84;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* START SCREEN */
+
+#startScreen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+  text-align: center;
+  gap: 18px;
+}
+
+.logo {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+.logo span {
+  color: var(--green);
+}
+
+.subtitle {
+  color: #92999e;
+  font-size: 13px;
+}
+
+.roleButtons {
+  display: grid;
+  gap: 15px;
+  width: min(100%, 360px);
+  margin-top: 20px;
+}
+
+.roleButtons button {
+  background: var(--panel);
+  color: white;
+  border: 1px solid #30383d;
+  padding: 23px;
+  border-radius: 15px;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.roleButtons button:hover {
+  border-color: var(--green);
+}
+
+.roleButtons small {
+  display: block;
+  color: #89949b;
+  margin-top: 8px;
+  font-weight: normal;
+}
+
+/* GENERAL */
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 17px 20px;
+  border-bottom: 1px solid #252a2e;
+}
+
+.headerLogo {
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.headerLogo span {
+  color: var(--green);
+}
+
+.status {
+  color: #92999e;
+  font-size: 11px;
+}
+
+.back {
+  color: white;
+  background: #252a2e;
+  border: 0;
+  border-radius: 8px;
+  padding: 9px 12px;
+}
+
+/* PAIRING */
+
+.pairing {
+  background: #121619;
+  border: 1px solid #30383d;
+  padding: 25px;
+  border-radius: 15px;
+  width: min(100%, 380px);
+  margin: 35px auto;
+  text-align: center;
+}
+
+.pairing h2 {
+  margin-bottom: 10px;
+}
+
+.pairing p {
+  color: #939da3;
+  font-size: 13px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.code {
+  font-size: 35px;
+  font-weight: 900;
+  letter-spacing: 9px;
+  color: var(--green);
+  margin: 20px 0;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px;
+  background: #090c0e;
+  border: 1px solid #343c42;
+  border-radius: 9px;
+  color: white;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--green);
+}
+
+.primary {
+  background: var(--green);
+  color: #061008;
+  border: none;
+  border-radius: 9px;
+  padding: 13px;
+  width: 100%;
+  font-weight: 900;
+  margin-top: 12px;
+}
+
+.secondary {
+  background: #252d32;
+  color: white;
+  border: 1px solid #414b51;
+  border-radius: 9px;
+  padding: 12px;
+}
+
+/* IPHONE DASHBOARD */
+
+#dashboard {
+  min-height: 100vh;
+  background: #050607;
+  max-width: 500px;
+  margin: auto;
+}
+
+.dashBody {
+  padding: 25px 22px;
+}
+
+.dashTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #939da3;
+  font-size: 11px;
+}
+
+.connectionDot {
+  color: var(--green);
+}
+
+.speedArea {
+  text-align: center;
+  margin-top: 65px;
+}
+
+.speed {
+  font-size: clamp(105px, 30vw, 160px);
+  font-weight: 300;
+  letter-spacing: -9px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.speedUnit {
+  font-size: 18px;
+  color: #adb5b9;
+  margin-top: 5px;
+}
+
+.modeDisplay {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--green);
+  margin-top: 28px;
+  letter-spacing: 3px;
+}
+
+.modeDisplay.sport {
+  color: #23aaff;
+}
+
+.modeDisplay.race {
+  color: #ff4949;
+}
+
+.modeDisplay.police {
+  color: #65bfff;
+}
+
+.dashIndicators {
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  margin-top: 34px;
+  font-size: 23px;
+  color: #758087;
+}
+
+.indicator.active {
+  color: var(--green);
+}
+
+.batteryArea {
+  margin-top: 65px;
+}
+
+.batteryLabel {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.batteryTrack {
+  height: 13px;
+  background: #252b2f;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.batteryFill {
+  width: 85%;
+  height: 100%;
+  background: var(--green);
+  transition: width .3s;
+}
+
+.dashFooter {
+  text-align: center;
+  margin-top: 60px;
+  color: #626b71;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+/* IPAD CONTROLLER */
+
+#controller {
+  min-height: 100vh;
+  background: #090c0e;
+}
+
+.controlLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 17px;
+  padding: 20px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid #2b3338;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.panel h3 {
+  font-size: 14px;
+  margin-bottom: 18px;
+  color: #c3cbd0;
+  letter-spacing: 1px;
+}
+
+.bigValue {
+  font-size: 35px;
+  font-weight: 900;
+  color: var(--green);
+  margin: 12px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+input[type=range] {
+  accent-color: var(--green);
+  padding: 0;
+  margin: 15px 0;
+  cursor: pointer;
+}
+
+.rangeLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #8d979d;
+}
+
+.pedals {
+  display: flex;
+  gap: 12px;
+}
+
+.pedal {
+  flex: 1;
+  height: 125px;
+  border-radius: 12px;
+  font-weight: 900;
+  border: 1px solid #404b51;
+  color: white;
+  background: #20282c;
+  touch-action: none;
+  user-select: none;
+}
+
+.pedal small {
+  display: block;
+  margin-top: 12px;
+  color: #a3adb2;
+}
+
+.pedal.gas.active {
+  background: #145a29;
+  border-color: var(--green);
+}
+
+.pedal.brake.active {
+  background: #752323;
+  border-color: #ff5555;
+}
+
+.modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.modeButton {
+  background: #222a2f;
+  color: #aeb8be;
+  border: 1px solid #394249;
+  border-radius: 9px;
+  padding: 14px 5px;
+  font-weight: bold;
+}
+
+.modeButton.active {
+  border-color: var(--green);
+  color: var(--green);
+  background: #173021;
+}
+
+.settingLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #c3cbd0;
+}
+
+.connectionMessage {
+  color: #9ba5aa;
+  font-size: 12px;
+  margin-top: 15px;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+@media(max-width: 650px) {
+  .controlLayout {
+    grid-template-columns: 1fr;
+  }
+  .wide {
+    grid-column: auto;
+  }
+  .speedArea {
+    margin-top: 55px;
+  }
+}
+
+@media (orientation: landscape) and (min-width: 700px) {
+  #dashboard {
+    max-width: none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- START -->
+
+<section id="startScreen">
+  <div class="logo">E-SCOOTER <span>OS</span></div>
+  <div class="subtitle">DIGITAL SCOOTER SIMULATOR v1.0</div>
+
+  <div class="roleButtons">
+    <button onclick="openController()">
+      <span>🎮 iPad Controller</span>
+      <small>Create a pairing code and control the simulator</small>
+    </button>
+
+    <button onclick="openDashboard()">
+      <span>📱 iPhone Dashboard</span>
+      <small>Enter a code to connect to the controller</small>
+    </button>
+  </div>
+</section>
+
+<!-- CONTROLLER -->
+
+<section id="controller" class="hidden">
+  <header>
+    <div class="headerLogo">E-SCOOTER <span>OS</span></div>
+    <button class="back" onclick="goHome()">EXIT</button>
+  </header>
+
+  <div id="controllerPairing" class="pairing">
+    <h2>Controller Setup</h2>
+    <p>Share this six-digit code with the iPhone dashboard.</p>
+    <div class="code" id="generatedCode">------</div>
+    <div class="status" id="controllerStatus">Generating connection...</div>
+    <button class="secondary" onclick="copyCode()">COPY CODE</button>
+  </div>
+
+  <div id="controllerControls" class="hidden">
+    <div style="padding:20px 20px 0">
+      <div class="status">
+        <span class="connectionDot">● CONNECTED</span>
+        &nbsp; SIMULATION ACTIVE
+      </div>
+    </div>
+
+    <div class="controlLayout">
+
+      <div class="panel">
+        <h3>ACCELERATOR / BRAKE</h3>
+        <div class="pedals">
+          <button class="pedal gas" id="gas">
+            ▲
+            <small>GAS</small>
+          </button>
+          <button class="pedal brake" id="brake">
+            ▼
+            <small>BRAKE</small>
+          </button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>LIVE SPEED</h3>
+        <div class="bigValue"><span id="controlSpeed">0</span> MPH</div>
+        <div class="status">SIMULATED SPEED</div>
+      </div>
+
+      <div class="panel">
+        <h3>BATTERY SETTINGS</h3>
+        <div class="settingLabel">
+          <span>Battery level</span>
+          <strong id="batteryValue">85%</strong>
+        </div>
+        <input id="battery" type="range" min="0" max="100" value="85">
+        <div class="rangeLabels">
+          <span>0%</span><span>100%</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>MAXIMUM SPEED</h3>
+        <div class="settingLabel">
+          <span>Speed limit</span>
+          <strong id="limitValue">25 MPH</strong>
+        </div>
+        <input id="speedLimit" type="range" min="1" max="50" value="25">
+        <div class="rangeLabels">
+          <span>1 MPH</span><span>50 MPH</span>
+        </div>
+      </div>
+
+      <div class="panel wide">
+        <h3>RIDING MODE</h3>
+        <div class="modes">
+          <button class="modeButton active" data-mode="ECO">ECO</button>
+          <button class="modeButton" data-mode="SPORT">SPORT</button>
+          <button class="modeButton" data-mode="RACE">RACE</button>
+          <button class="modeButton" data-mode="POLICE">POLICE</button>
+        </div>
+      </div>
+
+      <div class="panel wide">
+        <h3>SIMULATOR INFORMATION</h3>
+        <div class="settingLabel">
+          <span>Connection</span><strong style="color:var(--green)">CONNECTED</strong>
+        </div>
+        <div class="settingLabel" style="margin-top:15px">
+          <span>Hardware control</span><strong>DISABLED</strong>
+        </div>
+        <button class="secondary" style="width:100%;margin-top:18px"
+          onclick="disconnectAll()">DISCONNECT</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="hidden">
+
+  <header>
+    <div class="headerLogo">E-SCOOTER <span>OS</span></div>
+    <div class="status" id="dashConnection">NOT CONNECTED</div>
+  </header>
+
+  <div id="dashboardPairing" class="pairing">
+    <h2>Connect Dashboard</h2>
+    <p>Enter the six-digit code displayed on the iPad controller.</p>
+    <input id="codeInput" inputmode="numeric" maxlength="6"
+      placeholder="ENTER CODE">
+    <button class="primary" onclick="connectDashboard()">CONNECT</button>
+    <div class="connectionMessage" id="dashMessage">Waiting for pairing...</div>
+  </div>
+
+  <div id="dashboardDisplay" class="hidden">
+    <div class="dashBody">
+
+      <div class="dashTop">
+        <span>● <span class="connectionDot">ONLINE</span></span>
+        <span>E-SCOOTER OS</span>
+      </div>
+
+      <div class="speedArea">
+        <div class="speed" id="dashSpeed">0</div>
+        <div class="speedUnit">mph</div>
+        <div class="modeDisplay" id="dashMode">ECO</div>
+      </div>
+
+      <div class="dashIndicators">
+        <span id="ecoIndicator" class="indicator active">E</span>
+        <span id="lightIndicator" class="indicator">◉</span>
+        <span class="indicator">⚙</span>
+      </div>
+
+      <div class="batteryArea">
+        <div class="batteryLabel">
+          <span>BATTERY</span>
+          <strong id="dashBattery">85%</strong>
+        </div>
+        <div class="batteryTrack">
+          <div class="batteryFill" id="dashBatteryFill"></div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:40px;color:#89949a;font-size:12px">
+        SPEED LIMIT: <strong id="dashLimit">25 MPH</strong>
+      </div>
+
+      <div class="dashFooter">
+        SIMULATION ONLY • NO HARDWARE CONNECTED
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+
+// CONNECTION SYSTEM
+
+let peer = null;
+let connection = null;
+let role = "";
+let roomCode = "";
+let connected = false;
+
+// SIMULATED SCOOTER STATE
+
+let state = {
+  speed: 0,
+  battery: 85,
+  maxSpeed: 25,
+  mode: "ECO",
+  throttle: false,
+  braking: false
+};
+
+function show(id) {
+  ["startScreen","controller","dashboard"].forEach(x =>
+    document.getElementById(x).classList.add("hidden")
+  );
+  document.getElementById(id).classList.remove("hidden");
+}
+
+function openController() {
+  role = "controller";
+  show("controller");
+  createController();
+}
+
+function openDashboard() {
+  role = "dashboard";
+  show("dashboard");
+}
+
+// GENERATE PAIRING CODE
+
+function createController() {
+  roomCode = String(Math.floor(100000 + Math.random()*900000));
+
+  document.getElementById("generatedCode").textContent = roomCode;
+
+  peer = new Peer("escooter-os-" + roomCode);
+
+  peer.on("open", () => {
+    document.getElementById("controllerStatus").textContent =
+      "WAITING FOR IPHONE CONNECTION...";
+  });
+
+  peer.on("connection", conn => {
+    connection = conn;
+
+    conn.on("open", () => {
+      connected = true;
+
+      document.getElementById("controllerPairing")
+        .classList.add("hidden");
+
+      document.getElementById("controllerControls")
+        .classList.remove("hidden");
+
+      sendState();
+    });
+
+    conn.on("close", () => {
+      connected = false;
+    });
+
+    conn.on("error", err => {
+      console.error(err);
+    });
+  });
+
+  peer.on("error", err => {
+    document.getElementById("controllerStatus").textContent =
+      "CONNECTION ERROR: " + err.type;
+  });
+}
+
+function copyCode() {
+  navigator.clipboard.writeText(roomCode)
+    .then(() => alert("Pairing code copied!"))
+    .catch(() => alert("Your code is: " + roomCode));
+}
+
+// DASHBOARD CONNECTION
+
+function connectDashboard() {
+  const code = document.getElementById("codeInput").value.trim();
+
+  if (!/^\d{6}$/.test(code)) {
+    document.getElementById("dashMessage").textContent =
+      "Please enter a valid six-digit code.";
+    return;
+  }
+
+  if (!window.Peer) {
+    document.getElementById("dashMessage").textContent =
+      "Connection library unavailable.";
+    return;
+  }
+
+  document.getElementById("dashMessage").textContent =
+    "Connecting...";
+
+  peer = new Peer();
+
+  peer.on("open", () => {
+    connection = peer.connect("escooter-os-" + code);
+
+    connection.on("open", () => {
+      connected = true;
+
+      document.getElementById("dashboardPairing")
+        .classList.add("hidden");
+
+      document.getElementById("dashboardDisplay")
+        .classList.remove("hidden");
+
+      document.getElementById("dashConnection").textContent =
+        "CONNECTED";
+    });
+
+    connection.on("data", data => {
+      if (data && data.type === "state") {
+        updateDashboard(data.state);
+      }
+    });
+
+    connection.on("error", err => {
+      document.getElementById("dashMessage").textContent =
+        "Connection failed.";
+      console.error(err);
+    });
+
+    connection.on("close", () => {
+      document.getElementById("dashConnection").textContent =
+        "DISCONNECTED";
+    });
+  });
+
+  peer.on("error", err => {
+    document.getElementById("dashMessage").textContent =
+      "Could not connect. Check the code and try again.";
+  });
+}
+
+// SEND SIMULATION DATA
+
+function sendState() {
+  if (connection && connection.open) {
+    connection.send({
+      type: "state",
+      state: state
+    });
+  }
+}
+
+// DASHBOARD DISPLAY
+
+function updateDashboard(data) {
+  document.getElementById("dashSpeed").textContent =
+    Math.round(data.speed);
+
+  document.getElementById("dashBattery").textContent =
+    data.battery + "%";
+
+  document.getElementById("dashBatteryFill").style.width =
+    data.battery + "%";
+
+  document.getElementById("dashLimit").textContent =
+    data.maxSpeed + " MPH";
+
+  const mode = document.getElementById("dashMode");
+  mode.textContent = data.mode;
+
+  mode.className = "modeDisplay " + data.mode.toLowerCase();
+
+  document.getElementById("ecoIndicator").textContent =
+    data.mode === "ECO" ? "E" :
+    data.mode === "SPORT" ? "S" :
+    data.mode === "RACE" ? "R" : "P";
+
+  document.getElementById("ecoIndicator").classList.add("active");
+}
+
+// CONTROLLER SETTINGS
+
+document.getElementById("battery").addEventListener("input", e => {
+  state.battery = Number(e.target.value);
+  document.getElementById("batteryValue").textContent =
+    state.battery + "%";
+  sendState();
+});
+
+document.getElementById("speedLimit").addEventListener("input", e => {
+  state.maxSpeed = Number(e.target.value);
+  document.getElementById("limitValue").textContent =
+    state.maxSpeed + " MPH";
+  sendState();
+});
+
+document.querySelectorAll(".modeButton").forEach(button => {
+  button.addEventListener("click", () => {
+    state.mode = button.dataset.mode;
+
+    document.querySelectorAll(".modeButton").forEach(b =>
+      b.classList.remove("active")
+    );
+
+    button.classList.add("active");
+    sendState();
+  });
+});
+
+// SIMULATED PEDALS
+
+function setupPedal(id, property) {
+  const button = document.getElementById(id);
+
+  function press(e) {
+    e.preventDefault();
+    state[property] = true;
+    button.classList.add("active");
+  }
+
+  function release() {
+    state[property] = false;
+    button.classList.remove("active");
+  }
+
+  button.addEventListener("pointerdown", press);
+  button.addEventListener("pointerup", release);
+  button.addEventListener("pointerleave", release);
+  button.addEventListener("pointercancel", release);
+}
+
+setupPedal("gas", "throttle");
+setupPedal("brake", "braking");
+
+// SPEED SIMULATION
+
+setInterval(() => {
+  if (role !== "controller" || !connected) return;
+
+  if (state.braking) {
+    state.speed = Math.max(0, state.speed - 1.5);
+  } else if (state.throttle && state.battery > 0) {
+    state.speed = Math.min(
+      state.maxSpeed,
+      state.speed + 0.35
+    );
+  } else {
+    state.speed = Math.max(0, state.speed - 0.12);
+  }
+
+  document.getElementById("controlSpeed").textContent =
+    Math.round(state.speed);
+
+  sendState();
+}, 100);
+
+// CLEANUP
+
+function disconnectAll() {
+  connected = false;
+
+  if (peer) peer.destroy();
+
+  peer = null;
+  connection = null;
+
+  state.speed = 0;
+
+  document.getElementById("controllerControls")
+    .classList.add("hidden");
+
+  document.getElementById("controllerPairing")
+    .classList.remove("hidden");
+
+  show("startScreen");
+}
+
+function goHome() {
+  disconnectAll();
+}
+
+</script>
+</body>
+</html>
