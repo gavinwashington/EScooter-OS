@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -192,7 +193,7 @@ input:focus, select:focus {
   padding: 12px;
 }
 
-/* IPHONE DASHBOARD */
+/* IPHONE SPEED DISPLAY */
 
 #dashboard {
   min-height: 100vh;
@@ -455,18 +456,18 @@ input[type=range] {
 
   <div class="roleButtons">
     <button onclick="openController()">
-      <span>🎮 iPad Controller</span>
-      <small>Create a pairing code and control the simulator</small>
+      <span>📲 iPad – CONTROL SCOOTER</span>
+      <small>Use this device to operate the scooter, adjust settings, and control speed.</small>
     </button>
 
     <button onclick="openDashboard()">
-      <span>📱 iPhone Dashboard</span>
-      <small>Enter a code to connect to the controller</small>
+      <span>📱 iPhone – SPEED DISPLAY</span>
+      <small>Use this device to view live MPH, battery level, riding mode, and speed limit.</small>
     </button>
   </div>
 </section>
 
-<!-- CONTROLLER -->
+<!-- IPAD CONTROLLER -->
 
 <section id="controller" class="hidden">
   <header>
@@ -475,8 +476,8 @@ input[type=range] {
   </header>
 
   <div id="controllerPairing" class="pairing">
-    <h2>Controller Setup</h2>
-    <p>Share this six-digit code with the iPhone dashboard.</p>
+    <h2>iPad Controller Setup</h2>
+    <p>Share this six-digit code with your iPhone Speed Display.</p>
     <div class="code" id="generatedCode">------</div>
     <div class="status" id="controllerStatus">Generating connection...</div>
     <button class="secondary" onclick="copyCode()">COPY CODE</button>
@@ -485,7 +486,7 @@ input[type=range] {
   <div id="controllerControls" class="hidden">
     <div style="padding:20px 20px 0">
       <div class="status">
-        <span class="connectionDot">● CONNECTED</span>
+        <span class="connectionDot">● IPHONE DISPLAY CONNECTED</span>
         &nbsp; SIMULATION ACTIVE
       </div>
     </div>
@@ -493,7 +494,7 @@ input[type=range] {
     <div class="controlLayout">
 
       <div class="panel">
-        <h3>ACCELERATOR / BRAKE</h3>
+        <h3>THROTTLE & BRAKES</h3>
         <div class="pedals">
           <button class="pedal gas" id="gas">
             ▲
@@ -507,7 +508,7 @@ input[type=range] {
       </div>
 
       <div class="panel">
-        <h3>LIVE SPEED</h3>
+        <h3>CURRENT SPEED</h3>
         <div class="bigValue"><span id="controlSpeed">0</span> MPH</div>
         <div class="status">SIMULATED SPEED</div>
       </div>
@@ -562,22 +563,22 @@ input[type=range] {
   </div>
 </section>
 
-<!-- DASHBOARD -->
+<!-- IPHONE SPEED DISPLAY -->
 
 <section id="dashboard" class="hidden">
 
   <header>
     <div class="headerLogo">E-SCOOTER <span>OS</span></div>
-    <div class="status" id="dashConnection">NOT CONNECTED</div>
+    <div class="status" id="dashConnection">NOT CONNECTED TO IPAD</div>
   </header>
 
   <div id="dashboardPairing" class="pairing">
-    <h2>Connect Dashboard</h2>
-    <p>Enter the six-digit code displayed on the iPad controller.</p>
+    <h2>iPhone Speed Display</h2>
+    <p>Enter the six-digit code shown on your iPad Controller.</p>
     <input id="codeInput" inputmode="numeric" maxlength="6"
-      placeholder="ENTER CODE">
-    <button class="primary" onclick="connectDashboard()">CONNECT</button>
-    <div class="connectionMessage" id="dashMessage">Waiting for pairing...</div>
+      placeholder="ENTER IPAD CODE">
+    <button class="primary" onclick="connectDashboard()">CONNECT TO IPAD</button>
+    <div class="connectionMessage" id="dashMessage">Waiting for iPad connection...</div>
   </div>
 
   <div id="dashboardDisplay" class="hidden">
@@ -585,7 +586,7 @@ input[type=range] {
 
       <div class="dashTop">
         <span>● <span class="connectionDot">ONLINE</span></span>
-        <span>E-SCOOTER OS</span>
+        <span>IPHONE SPEED DISPLAY</span>
       </div>
 
       <div class="speedArea">
@@ -671,7 +672,7 @@ function createController() {
 
   peer.on("open", () => {
     document.getElementById("controllerStatus").textContent =
-      "WAITING FOR IPHONE CONNECTION...";
+      "WAITING FOR IPHONE SPEED DISPLAY...";
   });
 
   peer.on("connection", conn => {
@@ -710,7 +711,7 @@ function copyCode() {
     .catch(() => alert("Your code is: " + roomCode));
 }
 
-// DASHBOARD CONNECTION
+// IPHONE CONNECTION TO IPAD
 
 function connectDashboard() {
   const code = document.getElementById("codeInput").value.trim();
@@ -728,7 +729,7 @@ function connectDashboard() {
   }
 
   document.getElementById("dashMessage").textContent =
-    "Connecting...";
+    "Connecting to iPad...";
 
   peer = new Peer();
 
@@ -745,7 +746,7 @@ function connectDashboard() {
         .classList.remove("hidden");
 
       document.getElementById("dashConnection").textContent =
-        "CONNECTED";
+        "CONNECTED TO IPAD";
     });
 
     connection.on("data", data => {
@@ -762,7 +763,7 @@ function connectDashboard() {
 
     connection.on("close", () => {
       document.getElementById("dashConnection").textContent =
-        "DISCONNECTED";
+        "DISCONNECTED FROM IPAD";
     });
   });
 
@@ -783,7 +784,7 @@ function sendState() {
   }
 }
 
-// DASHBOARD DISPLAY
+// IPHONE DISPLAY UPDATE
 
 function updateDashboard(data) {
   document.getElementById("dashSpeed").textContent =
@@ -811,7 +812,7 @@ function updateDashboard(data) {
   document.getElementById("ecoIndicator").classList.add("active");
 }
 
-// CONTROLLER SETTINGS
+// IPAD CONTROLLER SETTINGS
 
 document.getElementById("battery").addEventListener("input", e => {
   state.battery = Number(e.target.value);
